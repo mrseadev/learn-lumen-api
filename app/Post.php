@@ -25,4 +25,10 @@ class Post extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public static function getPosts()
+    {
+        $posts = Post::get();
+        return $posts;
+    }
 }
