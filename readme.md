@@ -12,6 +12,8 @@ Laravel Lumen is a stunningly fast PHP micro-framework for building web applicat
 
 Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
 
+### Creating Your First Artisan Command in Lumen 5.5 > [Read my docs](docs/creating.md)
+
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
