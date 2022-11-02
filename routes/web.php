@@ -15,16 +15,19 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/newuser', 'UserController@createNewUser');
+$router->group(['prefix' => 'api/'], function () use ($router) {
+    $router->post('users/add', 'UserController@add');
+    $router->get('users/login', 'UserController@login');
+    $router->get('users/refresh_token', ['middleware' => 'auth', 'uses' => 'UserController@refreshToken']);
+    $router->get('users/{id}/posts', ['middleware' => 'auth', 'uses' => 'PostController@getUserPosts']);
 
-$router->get('/users/{id}/posts', 'PostController@getUserPosts');
-
-$router->group(['prefix' => 'posts'], function () use ($router) {
-    $router->get('/', 'PostController@gets');
-    $router->get('/{id}', 'PostController@get');
-    $router->post('/add', 'PostController@add');
-    $router->put('/{id}/update', 'PostController@update');
-    $router->post('/{id}/duplicate', 'PostController@duplicate');
-    $router->delete('/delete', 'PostController@deleteAll');
-    $router->delete('/{id}/delete', 'PostController@delete');
+    $router->group(['prefix' => 'posts/', 'middleware' => 'auth'], function () use ($router) {
+        $router->get('', 'PostController@gets');
+        $router->get('{id}', 'PostController@get');
+        $router->post('add', 'PostController@add');
+        $router->put('{id}/update', 'PostController@update');
+        $router->post('{id}/duplicate', 'PostController@duplicate');
+        $router->delete('{id}/delete', 'PostController@delete');
+        $router->delete('delete', 'PostController@deleteAll');
+    });
 });
