@@ -66,6 +66,24 @@ class PostController extends Controller
         return true;
     }
 
+    protected function uploadImage(Request $_request, $_file_name)
+    {
+        if ($_request->hasFile('image')) {
+            $image = $_request->file('image');
+            if (is_array($image)) {
+                $image = $image[0];
+            }
+            $image_name = $_file_name . '-' . time() . '.' . $image->getClientOriginalExtension();
+
+            $destinationPath = storage_path(STORE_IMAGE);
+            $image->move($destinationPath, $image_name);
+        } else {
+            $image_name = '';
+        }
+
+        return $image_name;
+    }
+
     public function gets(Request $request)
     {
         $query = $request->query();
@@ -118,18 +136,7 @@ class PostController extends Controller
 
         try {
             $slug_title = Str::slug($request->input('title'), '-');
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                if (is_array($image)) {
-                    $image = $image[0];
-                }
-                $image_name = $slug_title . '-' . time() . '.' . $image->getClientOriginalExtension();
-
-                $destinationPath = storage_path(STORE_IMAGE);
-                $image->move($destinationPath, $image_name);
-            } else {
-                throw new \Exception('Image is required');
-            }
+            $image_name = $this->uploadImage($request, $slug_title);
 
             $post = new Post;
             $post->title = $request->input('title');
@@ -187,17 +194,8 @@ class PostController extends Controller
                 if (file_exists($old_image_path)) {
                     @unlink($old_image_path);
                 }
-
-                $image = $request->file('image');
-                if (is_array($image)) {
-                    $image = $image[0];
-                }
-                $image_name = $slug_title . '-' . time() . '.' . $image->getClientOriginalExtension();
-                $destinationPath = storage_path(STORE_IMAGE);
-                $image->move($destinationPath, $image_name);
-            } else {
-                throw new \Exception('Image is required');
             }
+            $image_name = $this->uploadImage($request, $slug_title);
 
             $post = Post::find($id);
             $post->title = $request->input('title');
