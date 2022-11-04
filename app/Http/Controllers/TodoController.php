@@ -8,6 +8,25 @@ use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
+    protected function validateRequest(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'title' => 'required',
+            ], [
+                'title.required' => 'Title is required',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'errors' =>  $e->validator->errors(),
+                'message' => 'Validation error'
+            ], 500);
+        }
+
+        return true;
+    }
+
     public function index(Request $request)
     {
         $query = $request->query();
@@ -59,11 +78,13 @@ class TodoController extends Controller
 
     public function add(Request $request)
     {
+        $validate = $this->validateRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
+
         try {
             $json_data = $request->json()->all();
-            if (!isset($json_data['title']) || empty($json_data['title'])) {
-                throw new \Exception('title is required');
-            }
             $row = Todo::create($json_data);
             return response()->json([
                 'error' => false,
@@ -80,11 +101,13 @@ class TodoController extends Controller
 
     public function update(Request $request, $id)
     {
+        $validate = $this->validateRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
+
         try {
             $json_data = $request->json()->all();
-            if (!isset($json_data['title']) || empty($json_data['title'])) {
-                throw new \Exception('title is required');
-            }
             $row = Todo::find($id);
             if (!$row) {
                 throw new \Exception('Todo not found');

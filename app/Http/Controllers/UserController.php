@@ -17,44 +17,96 @@ class UserController extends Controller
     {
         //
     }
-    public function add(Request $request)
+
+    protected function validateAddRequest(Request $request)
     {
-        $response =
+        try {
             $this->validate(
                 $request,
                 [
                     'name' => 'required',
                     'email' => 'required|email|unique:users',
                     'password' => 'required'
+                ],
+                [
+                    'name.required' => 'Name is required',
+                    'email.required' => 'Email is required',
+                    'email.email' => 'Email is invalid',
+                    'email.unique' => 'Email already exists',
+                    'password.required' => 'Password is required'
                 ]
             );
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        if ($user->save()) {
-            $response = response()->json(
-                [
-                    'response' => [
-                        'created' => true,
-                        'userId' => $user->id
-                    ]
-                ],
-                201
-            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'errors' =>  $e->validator->errors(),
+                'message' => 'Validation error'
+            ], 500);
         }
-        return $response;
+
+        return true;
+    }
+
+    protected function validateLoginRequest(Request $request)
+    {
+        try {
+            $this->validate(
+                $request,
+                [
+                    'email' => 'required|email',
+                    'password' => 'required'
+                ],
+                [
+                    'email.required' => 'Email is required',
+                    'email.email' => 'Email is invalid',
+                    'password.required' => 'Password is required'
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'errors' =>  $e->validator->errors(),
+                'message' => 'Validation error'
+            ], 500);
+        }
+
+        return true;
+    }
+
+    public function add(Request $request)
+    {
+        $validate = $this->validateAddRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
+
+        try {
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response()->json([
+                'error' => false,
+                'message' => 'User added successfully',
+                'user' => $user
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function login(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required',
-            'password' => 'required'
-        ]);
+        $validate = $this->validateLoginRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
+
         $user = User::where('email', $request->input('email'))->first();
         if (Hash::check($request->input('password'), $user->password)) {
             $api_token = base64_encode(str_random(40));

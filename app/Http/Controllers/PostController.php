@@ -45,6 +45,27 @@ class PostController extends Controller
         }
     }
 
+    protected function validateRequest(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'title' => 'required',
+                'image' => 'required',
+            ], [
+                'title.required' => 'Title is required',
+                'image.required' => 'Image is required',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'errors' =>  $e->validator->errors(),
+                'message' => 'Validation error'
+            ], 500);
+        }
+
+        return true;
+    }
+
     public function gets(Request $request)
     {
         $query = $request->query();
@@ -90,10 +111,10 @@ class PostController extends Controller
 
     public function add(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'image' => 'required',
-        ]);
+        $validate = $this->validateRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
 
         try {
             $slug_title = Str::slug($request->input('title'), '-');
@@ -125,7 +146,7 @@ class PostController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => true,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -153,10 +174,10 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'image' => 'required',
-        ]);
+        $validate = $this->validateRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
 
         try {
             $slug_title = Str::slug($request->input('title'), '-');
