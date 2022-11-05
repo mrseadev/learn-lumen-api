@@ -33,6 +33,7 @@ $router->group(['prefix' => API_PREFIX . "/posts", 'middleware' => 'auth'], func
     $router->post('/{id}/duplicate', 'PostController@duplicate');
     $router->delete('/{id}/delete', 'PostController@delete');
     $router->delete('/delete', 'PostController@deleteAll');
+    $router->post('/add_with_transaction', 'PostController@addWithTransaction');
 });
 
 $router->group(['prefix' => API_PREFIX . "/todos", 'middleware' => 'auth'], function () use ($router) {

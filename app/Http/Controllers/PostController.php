@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Str;
+use App\Category;
 use App\User;
 use App\Post;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
 class PostController extends Controller
@@ -54,6 +56,29 @@ class PostController extends Controller
             ], [
                 'title.required' => 'Title is required',
                 'image.required' => 'Image is required',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'errors' =>  $e->validator->errors(),
+                'message' => 'Validation error'
+            ], 500);
+        }
+
+        return true;
+    }
+
+    protected function validateTransactionRequest(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'title' => 'required',
+                'image' => 'required',
+                'category_name' => 'required',
+            ], [
+                'title.required' => 'Title is required',
+                'image.required' => 'Image is required',
+                'category_name.required' => 'Category name is required',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -263,6 +288,48 @@ class PostController extends Controller
             return response()->json([
                 'error' => true,
                 'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function addWithTransaction(Request $request)
+    {
+        $validate = $this->validateTransactionRequest($request);
+        if ($validate !== true) {
+            return $validate;
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $category = new Category();
+            $category->name = $request->input('category_name');
+            $category->save();
+
+            $category_id = $category->id;
+            $slug_title = Str::slug($request->input('title'), '-');
+            $image_name = $this->uploadImage($request, $slug_title);
+
+            $post = new Post;
+            $post->title = $request->input('title');
+            $post->image = $image_name;
+            $post->content = $request->input('content');
+            $post->user_id = $request->input('user_id');
+            $post->category_id = $category_id;
+            $post->save();
+
+            DB::commit();
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Add post success',
+                'row' => $post
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
