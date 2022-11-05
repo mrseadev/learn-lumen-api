@@ -28,8 +28,8 @@ $router->group(['prefix' => API_PREFIX . "/users"], function () use ($router) {
 $router->group(['prefix' => API_PREFIX . "/posts", 'middleware' => 'auth'], function () use ($router) {
     $router->get('', 'PostController@gets');
     $router->get('/{id}', 'PostController@get');
-    $router->post('/add', 'PostController@add');
-    $router->put('/{id}/update', 'PostController@update');
+    $router->post('/add', ['middleware' => 'post', 'uses' => 'PostController@add']);
+    $router->post('/{id}/update', ['middleware' => 'post', 'uses' => 'PostController@update']);
     $router->post('/{id}/duplicate', 'PostController@duplicate');
     $router->delete('/{id}/delete', 'PostController@delete');
     $router->delete('/delete', 'PostController@deleteAll');

@@ -65,6 +65,10 @@ $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
+$app->routeMiddleware([
+    'post' => App\Http\Middleware\PostMiddleware::class,
+]);
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers

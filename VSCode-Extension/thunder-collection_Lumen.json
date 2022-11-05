@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Lumen",
-    "dateExported": "2022-11-03T20:18:30.405Z",
+    "dateExported": "2022-11-05T21:29:59.168Z",
     "version": "1.1",
     "folders": [
         {
@@ -32,11 +32,11 @@
             "colId": "dbf41b6c-3130-4e83-9025-ee3fbf08835b",
             "containerId": "297fd9d1-8217-4db4-8c06-18af1e13b084",
             "name": "Create User",
-            "url": "{{host}}/api/v1/newuser",
+            "url": "{{host}}/api/v1/users/add",
             "method": "POST",
             "sortNum": 10000,
             "created": "2022-10-30T14:59:52.275Z",
-            "modified": "2022-11-03T19:41:28.027Z",
+            "modified": "2022-11-04T19:58:15.319Z",
             "headers": [],
             "params": [],
             "body": {
@@ -56,14 +56,98 @@
             "containerId": "82bb599f-4e0e-4c8a-bfb2-e7f26dca7cee",
             "name": "add Post",
             "url": "{{host}}/api/v1/posts/add",
-            "method": "POST",
+            "method": "PUT",
             "sortNum": 10000,
             "created": "2022-10-31T08:48:57.044Z",
-            "modified": "2022-11-03T19:46:41.687Z",
+            "modified": "2022-11-05T21:07:16.305Z",
             "headers": [
                 {
                     "name": "API-Token",
-                    "value": "Z0x2MzJidUREYjh3YVNmRERSQVNxQkxVc2xsTUx0dGFRRVVleGZYUQ=="
+                    "value": "ME9WMkZ4cWJsZml6YWlaa3l0ME1FUFV1TWpBNXhtVDRaaHdCUjlWdA=="
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    { "name": "title", "value": "Đây là tiêu đề update" },
+                    { "name": "content", "value": "hello content" },
+                    { "name": "user_id", "value": "1" },
+                    {
+                        "name": "category_id",
+                        "value": "100000",
+                        "isDisabled": true
+                    }
+                ],
+                "files": [
+                    {
+                        "name": "image",
+                        "value": "c:\\Users\\Admin\\Desktop\\ban-hang-online-tren-facebook hieu qua.png"
+                    },
+                    {
+                        "name": "image[]",
+                        "value": "c:\\Users\\Admin\\Desktop\\kinh-nghiem-thiet-ke-ho-so-nang-luc-profile(1).jpg",
+                        "isDisabled": true
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "b5a1aa48-c1ec-48db-9e8c-7e965984c5f7",
+            "colId": "dbf41b6c-3130-4e83-9025-ee3fbf08835b",
+            "containerId": "82bb599f-4e0e-4c8a-bfb2-e7f26dca7cee",
+            "name": "update",
+            "url": "{{host}}/api/v1/posts/45/update",
+            "method": "POST",
+            "sortNum": 11250,
+            "created": "2022-11-05T21:01:32.939Z",
+            "modified": "2022-11-05T21:26:16.275Z",
+            "headers": [
+                {
+                    "name": "API-Token",
+                    "value": "ME9WMkZ4cWJsZml6YWlaa3l0ME1FUFV1TWpBNXhtVDRaaHdCUjlWdA=="
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    { "name": "title", "value": "Đây là tiêu đề update" },
+                    { "name": "content", "value": "hello content" },
+                    { "name": "user_id", "value": "1" },
+                    { "name": "category_id", "value": "12" }
+                ],
+                "files": [
+                    {
+                        "name": "image",
+                        "value": "c:\\Users\\Admin\\Desktop\\ban-hang-online-tren-facebook hieu qua.png"
+                    },
+                    {
+                        "name": "image[]",
+                        "value": "c:\\Users\\Admin\\Desktop\\kinh-nghiem-thiet-ke-ho-so-nang-luc-profile(1).jpg",
+                        "isDisabled": true
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "9f7fce80-3516-44c7-8729-bccb85ea1317",
+            "colId": "dbf41b6c-3130-4e83-9025-ee3fbf08835b",
+            "containerId": "82bb599f-4e0e-4c8a-bfb2-e7f26dca7cee",
+            "name": "add with transaction",
+            "url": "{{host}}/api/v1/posts/add_with_transaction",
+            "method": "POST",
+            "sortNum": 12500,
+            "created": "2022-11-05T19:57:15.487Z",
+            "modified": "2022-11-05T20:17:41.869Z",
+            "headers": [
+                {
+                    "name": "API-Token",
+                    "value": "ME9WMkZ4cWJsZml6YWlaa3l0ME1FUFV1TWpBNXhtVDRaaHdCUjlWdA=="
                 }
             ],
             "params": [],
@@ -73,11 +157,16 @@
                 "form": [
                     { "name": "title", "value": "Đây là tiêu đề" },
                     { "name": "content", "value": "hello content" },
-                    { "name": "user_id", "value": "1" }
+                    { "name": "user_id", "value": "1" },
+                    {
+                        "name": "category_name",
+                        "value": "Chuyen muc 1",
+                        "isDisabled": true
+                    }
                 ],
                 "files": [
                     {
-                        "name": "image[]",
+                        "name": "image",
                         "value": "c:\\Users\\Admin\\Desktop\\ban-hang-online-tren-facebook hieu qua.png"
                     },
                     {
@@ -148,7 +237,7 @@
             "method": "GET",
             "sortNum": 20000,
             "created": "2022-11-02T16:24:24.155Z",
-            "modified": "2022-11-03T19:41:34.491Z",
+            "modified": "2022-11-04T20:00:54.807Z",
             "headers": [],
             "params": [
                 {
@@ -207,17 +296,17 @@
             "method": "POST",
             "sortNum": 60000,
             "created": "2022-11-03T19:48:20.325Z",
-            "modified": "2022-11-03T20:05:36.031Z",
+            "modified": "2022-11-04T20:04:40.771Z",
             "headers": [
                 {
                     "name": "API-Token",
-                    "value": "Z0x2MzJidUREYjh3YVNmRERSQVNxQkxVc2xsTUx0dGFRRVVleGZYUQ=="
+                    "value": "dE9kVmU0WGhaNElzN2FPazNZMGJkdHhoaEdsU0Vhc0JJSzh4bGh5cg=="
                 }
             ],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"title\":\"the second title\"\n}",
+                "raw": "{\"title\":\"validate title test\"}",
                 "form": []
             },
             "tests": []
@@ -255,7 +344,7 @@
             "method": "GET",
             "sortNum": 70000,
             "created": "2022-11-03T19:54:47.793Z",
-            "modified": "2022-11-03T19:54:47.793Z",
+            "modified": "2022-11-03T20:47:58.704Z",
             "headers": [
                 {
                     "name": "API-Token",

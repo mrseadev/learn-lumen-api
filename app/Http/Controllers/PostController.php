@@ -162,12 +162,14 @@ class PostController extends Controller
         try {
             $slug_title = Str::slug($request->input('title'), '-');
             $image_name = $this->uploadImage($request, $slug_title);
+            $category_id = $request->input('category_id') ?? 0;
 
             $post = new Post;
             $post->title = $request->input('title');
             $post->image = $image_name;
             $post->content = $request->input('content');
             $post->user_id = $request->input('user_id');
+            $post->category_id = $category_id;
             $post->save();
 
             return response()->json([
@@ -221,12 +223,14 @@ class PostController extends Controller
                 }
             }
             $image_name = $this->uploadImage($request, $slug_title);
+            $category_id = $request->input('category_id') ?? 0;
 
             $post = Post::find($id);
             $post->title = $request->input('title');
             $post->image = $image_name;
             $post->content = $request->input('content');
             $post->user_id = $request->input('user_id');
+            $post->category_id = $category_id;
             $post->save();
 
             return response()->json([
