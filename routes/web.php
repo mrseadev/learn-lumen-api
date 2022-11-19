@@ -45,3 +45,9 @@ $router->group(['prefix' => API_PREFIX . "/todos", 'middleware' => 'auth'], func
     $router->delete('/{id}/delete', 'TodoController@delete');
     $router->delete('/delete', 'TodoController@deleteAll');
 });
+
+$router->group(['prefix' => API_PREFIX . "/files", 'middleware' => 'auth'], function () use ($router) {
+    $router->post('/upload', 'FileManagementController@upload');
+    $router->post('/copyFileTemp', 'FileManagementController@copyFileTemp');
+    $router->get('/deleteFileTemp', 'FileManagementController@deleteFileTemp');
+});

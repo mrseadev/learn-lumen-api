@@ -1,2 +1,4 @@
+files/*
 images/*
+temp/*
 !.gitignore
