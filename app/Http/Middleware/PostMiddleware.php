@@ -16,10 +16,10 @@ class PostMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $json_data = $request->json()->all();
+        $jsonData = $request->json()->all();
 
         // check category exists
-        $category_id = $json_data['category_id'] ?? 0;
+        $category_id = $jsonData['category_id'] ?? 0;
         if ($category_id > 0 && !\App\Category::find($category_id)) {
             return response()->json([
                 'error' => true,
@@ -28,7 +28,7 @@ class PostMiddleware
         }
 
         // copy image from store/temp to store/images
-        $image = $json_data['image'] ?? '';
+        $image = $jsonData['image'] ?? '';
         if ($image) {
             $result = FileManagementController::copyFileTemp($image);
             $result = json_decode($result->getContent(), true);

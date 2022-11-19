@@ -21,18 +21,43 @@ class FileManagementController extends Controller
                     $file = $file[0];
                 }
 
-                $file_name = time() .  '.' . $file->getClientOriginalExtension();
+                $fileName = time() .  '.' . $file->getClientOriginalExtension();
                 $destinationPath = storage_path(STORE_TEMP);
-                $file->move($destinationPath, $file_name);
-                $file_full_path = $destinationPath . '/' . $file_name;
+                $file->move($destinationPath, $fileName);
+                $fileFullPath = $destinationPath . '/' . $fileName;
             } else {
-                $file_full_path = '';
+                $fileFullPath = '';
             }
 
             return response()->json([
                 'error' => false,
                 "message" => "File uploaded successfully",
-                'file' => $file_full_path
+                'file' => $fileFullPath
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public static function deleteFile($_file)
+    {
+        if ($_file === "") {
+            return response()->json([
+                'error' => true,
+                'message' => 'File not found'
+            ], 500);
+        }
+
+        try {
+            if (file_exists($_file)) {
+                unlink($_file);
+            }
+            return response()->json([
+                'error' => false,
+                "message" => "File deleted successfully",
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

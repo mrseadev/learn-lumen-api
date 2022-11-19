@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Lumen",
-    "dateExported": "2022-11-05T21:29:59.168Z",
+    "dateExported": "2022-11-19T04:41:00.074Z",
     "version": "1.1",
     "folders": [
         {
@@ -24,6 +24,13 @@
             "containerId": "",
             "created": "2022-11-03T19:48:08.334Z",
             "sortNum": 40000
+        },
+        {
+            "_id": "bfedd5c6-c130-4e1f-9ac8-7fd016ee12da",
+            "name": "Files",
+            "containerId": "",
+            "created": "2022-11-18T16:32:03.970Z",
+            "sortNum": 50000
         }
     ],
     "requests": [
@@ -56,41 +63,21 @@
             "containerId": "82bb599f-4e0e-4c8a-bfb2-e7f26dca7cee",
             "name": "add Post",
             "url": "{{host}}/api/v1/posts/add",
-            "method": "PUT",
+            "method": "POST",
             "sortNum": 10000,
             "created": "2022-10-31T08:48:57.044Z",
-            "modified": "2022-11-05T21:07:16.305Z",
+            "modified": "2022-11-19T03:57:27.769Z",
             "headers": [
                 {
                     "name": "API-Token",
-                    "value": "ME9WMkZ4cWJsZml6YWlaa3l0ME1FUFV1TWpBNXhtVDRaaHdCUjlWdA=="
+                    "value": "YzdFU2M5SVFUVmZBUVNDQWpWQjJXSjdHdm5QU2xXOWY1dFFUWEV2bg=="
                 }
             ],
             "params": [],
             "body": {
-                "type": "formdata",
-                "raw": "",
-                "form": [
-                    { "name": "title", "value": "Đây là tiêu đề update" },
-                    { "name": "content", "value": "hello content" },
-                    { "name": "user_id", "value": "1" },
-                    {
-                        "name": "category_id",
-                        "value": "100000",
-                        "isDisabled": true
-                    }
-                ],
-                "files": [
-                    {
-                        "name": "image",
-                        "value": "c:\\Users\\Admin\\Desktop\\ban-hang-online-tren-facebook hieu qua.png"
-                    },
-                    {
-                        "name": "image[]",
-                        "value": "c:\\Users\\Admin\\Desktop\\kinh-nghiem-thiet-ke-ho-so-nang-luc-profile(1).jpg",
-                        "isDisabled": true
-                    }
-                ]
+                "type": "json",
+                "raw": "{\n  \"title\":\"this is title\",\n  \"content\":\"this is content\",\n  \"user_id\":1,\n  \"image\":\"D:\\\\MrBien\\\\xampp\\\\htdocs\\\\Learn-lumen\\\\storage\\\\temp/1668830236.jpg\"\n}",
+                "form": []
             },
             "tests": []
         },
@@ -352,6 +339,74 @@
                 }
             ],
             "params": [],
+            "tests": []
+        },
+        {
+            "_id": "6b5c2df1-ad1b-4b32-a710-baf69a9cb44f",
+            "colId": "dbf41b6c-3130-4e83-9025-ee3fbf08835b",
+            "containerId": "bfedd5c6-c130-4e1f-9ac8-7fd016ee12da",
+            "name": "Upload",
+            "url": "{{host}}/api/v1/files/upload",
+            "method": "POST",
+            "sortNum": 80000,
+            "created": "2022-11-18T16:32:16.455Z",
+            "modified": "2022-11-19T03:57:13.629Z",
+            "headers": [
+                {
+                    "name": "API-Token",
+                    "value": "YzdFU2M5SVFUVmZBUVNDQWpWQjJXSjdHdm5QU2xXOWY1dFFUWEV2bg=="
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [],
+                "files": [
+                    {
+                        "name": "file",
+                        "value": "c:\\Users\\Admin\\Desktop\\3-12.jpg"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "ab2d4b7b-73fa-4f8d-89bf-da979686ab4b",
+            "colId": "dbf41b6c-3130-4e83-9025-ee3fbf08835b",
+            "containerId": "bfedd5c6-c130-4e1f-9ac8-7fd016ee12da",
+            "name": "Delete temp",
+            "url": "{{host}}/api/v1/files/deleteFileTemp",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2022-11-18T17:03:15.582Z",
+            "modified": "2022-11-18T17:32:22.404Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "b097d24d-0404-47d3-9838-d8292d21d478",
+            "colId": "dbf41b6c-3130-4e83-9025-ee3fbf08835b",
+            "containerId": "bfedd5c6-c130-4e1f-9ac8-7fd016ee12da",
+            "name": "Copy files",
+            "url": "{{host}}/api/v1/files/copyFiles",
+            "method": "POST",
+            "sortNum": 100000,
+            "created": "2022-11-18T17:39:33.218Z",
+            "modified": "2022-11-18T17:45:53.592Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "urls[]",
+                        "value": "D:\\MrBien\\xampp\\htdocs\\Learn-lumen\\storage\\temp/1668792955.jpg"
+                    }
+                ]
+            },
             "tests": []
         }
     ]

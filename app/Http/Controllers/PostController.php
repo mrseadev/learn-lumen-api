@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
 use App\Category;
 use App\User;
 use App\Post;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
 
 class PostController extends Controller
 {
@@ -18,11 +16,6 @@ class PostController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-        define('STORE_IMAGE', Config::get('constants.STORE_IMAGE', 'images'));
-    }
 
     public function getUserPosts($id)
     {
@@ -91,36 +84,18 @@ class PostController extends Controller
         return true;
     }
 
-    protected function uploadImage(Request $_request, $_file_name)
-    {
-        if ($_request->hasFile('image')) {
-            $image = $_request->file('image');
-            if (is_array($image)) {
-                $image = $image[0];
-            }
-            $image_name = $_file_name . '-' . time() . '.' . $image->getClientOriginalExtension();
-
-            $destinationPath = storage_path(STORE_IMAGE);
-            $image->move($destinationPath, $image_name);
-        } else {
-            $image_name = '';
-        }
-
-        return $image_name;
-    }
-
     public function gets(Request $request)
     {
         $query = $request->query();
-        $per_page = $query['per_page'] ?? 10;
+        $perPage = $query['per_page'] ?? 10;
         $page = $query['page'] ?? 1;
 
-        $per_page = $per_page < 1 ? 1 : $per_page;
+        $perPage = $perPage < 1 ? 1 : $perPage;
         $page = $page < 1 ? 1 : $page;
-        $offset = ($page - 1) * $per_page;
+        $offset = ($page - 1) * $perPage;
 
         try {
-            $posts = Post::skip($offset)->take($per_page)->get();
+            $posts = Post::skip($offset)->take($perPage)->get();
 
             return response()->json([
                 'error' => false,
@@ -160,17 +135,8 @@ class PostController extends Controller
         }
 
         try {
-            $slug_title = Str::slug($request->input('title'), '-');
-            $image_name = $this->uploadImage($request, $slug_title);
-            $category_id = $request->input('category_id') ?? 0;
-
-            $post = new Post;
-            $post->title = $request->input('title');
-            $post->image = $image_name;
-            $post->content = $request->input('content');
-            $post->user_id = $request->input('user_id');
-            $post->category_id = $category_id;
-            $post->save();
+            $jsonData = $request->json()->all();
+            $post = Post::create($jsonData);
 
             return response()->json([
                 'error' => false,
@@ -189,14 +155,14 @@ class PostController extends Controller
     {
         try {
             $post = Post::find($id);
-            $new_post = $post->replicate();
-            $new_post->title = $new_post->title . ' - Copy';
-            $new_post->save();
+            $newPost = $post->replicate();
+            $newPost->title = $newPost->title . ' - Copy';
+            $newPost->save();
 
             return response()->json([
                 'error' => false,
                 'message' => 'Duplicate post success',
-                'row' => $new_post
+                'row' => $newPost
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -214,24 +180,16 @@ class PostController extends Controller
         }
 
         try {
-            $slug_title = Str::slug($request->input('title'), '-');
-            if ($request->hasFile('image')) {
-                $old_image = Post::find($id)->image;
-                $old_image_path = storage_path(STORE_IMAGE . '/' . $old_image);
-                if (file_exists($old_image_path)) {
-                    @unlink($old_image_path);
-                }
-            }
-            $image_name = $this->uploadImage($request, $slug_title);
-            $category_id = $request->input('category_id') ?? 0;
-
             $post = Post::find($id);
-            $post->title = $request->input('title');
-            $post->image = $image_name;
-            $post->content = $request->input('content');
-            $post->user_id = $request->input('user_id');
-            $post->category_id = $category_id;
-            $post->save();
+            $oldImage = $post->image;
+            $jsonData = $request->json()->all();
+
+            $newImage = $jsonData['image'] ?? '';
+            if ($newImage !== "" && $oldImage !== "" && $oldImage !== $newImage) {
+                FileManagementController::deleteFile($oldImage);
+            }
+
+            $post->update($jsonData);
 
             return response()->json([
                 'error' => false,
@@ -251,10 +209,7 @@ class PostController extends Controller
         try {
             $post = Post::find($id);
             if ($post) {
-                $image_path = storage_path(STORE_IMAGE . '/' . $post->image);
-                if (file_exists($image_path)) {
-                    @unlink($image_path);
-                }
+                FileManagementController::deleteFile($post->image);
 
                 $post->delete();
                 return response()->json([
@@ -277,10 +232,7 @@ class PostController extends Controller
         try {
             $posts = Post::all();
             foreach ($posts as $post) {
-                $image_path = storage_path(STORE_IMAGE . '/' . $post->image);
-                if (file_exists($image_path)) {
-                    @unlink($image_path);
-                }
+                FileManagementController::deleteFile($post->image);
             }
 
             Post::truncate();
@@ -306,19 +258,18 @@ class PostController extends Controller
         try {
             DB::beginTransaction();
 
+            $jsonData = $request->json()->all();
+
             $category = new Category();
-            $category->name = $request->input('category_name');
+            $category->name = $jsonData['category_name'];
             $category->save();
 
             $category_id = $category->id;
-            $slug_title = Str::slug($request->input('title'), '-');
-            $image_name = $this->uploadImage($request, $slug_title);
 
             $post = new Post;
-            $post->title = $request->input('title');
-            $post->image = $image_name;
-            $post->content = $request->input('content');
-            $post->user_id = $request->input('user_id');
+            $post->title = $jsonData['title'];
+            $post->content = $jsonData['content'];
+            $post->user_id = $jsonData['user_id'];
             $post->category_id = $category_id;
             $post->save();
 
